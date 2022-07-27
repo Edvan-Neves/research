@@ -1,0 +1,23 @@
+use resolution;
+-- Qual a média de idade das pessoas do sexo fem e mas, respectivamente que gostam de cerveja e clima frio? 
+
+create temporary table idade -- media de idade
+select cod_pessoa, data_nascimento
+         , timestampdiff(YEAR, data_nascimento, NOW()) as idade -- convertando idade em anos
+from pessoa; 
+
+select *
+from idade;
+
+select pes.genero, cli.clima, beb.bebida, avg(ida.idade) as media_idade
+from pesquisa as pesq 
+inner join pessoa as pes 
+  on pesq.cod_pessoa = pes.cod_pessoa
+inner join idade as ida 
+  on pesq.cod_pessoa = ida.cod_pessoa
+inner join clima as cli 
+  on pesq.cod_clima = cli.cod_clima 
+inner join bebida as beb
+  on pesq.cod_bebida = beb.cod_bebida
+where beb.bebida = 'cerveja' and cli.clima = 'frio'
+group by pes.genero, cli.clima, beb.bebida;
